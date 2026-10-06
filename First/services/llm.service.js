@@ -1,42 +1,38 @@
-const createOpenAIProvider = require("../providers/openai.provider");
+const OpenAI = require("openai");
 
-class LlmService {
-  constructor() {
-    this.model = process.env.LLM_MODEL;
-    if (!this.model) {
-      throw new Error("LLM_MODEL must be set in the environment.");
-    }
+let client;
 
-    this.providers = {
-      openai: createOpenAIProvider({ apiKey: process.env.LLM_API_KEY }),
-    };
+function getClient() {
+  const apiKey = process.env.LLM_API_KEY;
+  const model = process.env.LLM_MODEL;
+
+  if (!apiKey) {
+    throw new Error("LLM_API_KEY must be set in the environment.");
+  }
+  if (!model) {
+    throw new Error("LLM_MODEL must be set in the environment.");
   }
 
-  async generateResponse(providerName, message) {
-    if (!Object.hasOwn(this.providers, providerName)) {
-      const error = new Error(`Unsupported provider: ${providerName}`);
-      error.statusCode = 400;
-      throw error;
-    }
-
-    if (providerName === "openai") {
-      return this.generateOpenAIResponse(message);
-    }
+  if (!client) {
+    client = new OpenAI({ apiKey });
   }
 
-  async generateOpenAIResponse(message) {
-    const result = await this.providers.openai.chat.completions.create({
-      model: this.model,
-      messages: [{ role: "user", content: message }],
-    });
-
-    const response = result.choices?.[0]?.message?.content;
-    if (typeof response !== "string" || !response.trim()) {
-      throw new Error("The LLM returned an empty response.");
-    }
-
-    return response.trim();
-  }
+  return { client, model };
 }
 
-module.exports = new LlmService();
+async function generateResponse(message) {
+  const { client, model } = getClient();
+  const result = await client.chat.completions.create({
+    model,
+    messages: [{ role: "user", content: message }],
+  });
+
+  const answer = result.choices?.[0]?.message?.content;
+  if (typeof answer !== "string" || !answer.trim()) {
+    throw new Error("The LLM returned an empty response.");
+  }
+
+  return answer.trim();
+}
+
+module.exports = { generateResponse };

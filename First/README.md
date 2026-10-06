@@ -1,18 +1,10 @@
 # Basic LLM Chat API
 
-A small Node.js and Express API that sends a user's message to an LLM and
-returns only the generated text.
-
-The Express app and server startup are both in `app.js`, following the style of
-the Express-Practice Question-3 project. The route, controller, and LLM service
-remain separate. The class-based LLM service creates and selects a provider
-based on the `provider` field in each request. The controller imports the
-shared service instance directly, so the app and route do not pass it around.
-Provider modules create SDK clients; the service contains provider-specific
-request and response code.
+A small Node.js and Express API that accepts a message, sends it to an LLM,
+and returns only the generated text.
 
 ```text
-Route → Controller → LLM service → Provider adapter → LLM API
+Client -> POST /chat -> Controller -> LlmService -> LLM API
 ```
 
 ## Setup
@@ -24,10 +16,9 @@ npm install
 Copy-Item .env.example .env
 ```
 
-Set both `LLM_API_KEY` and `LLM_MODEL` in `.env`. The app throws a
-configuration error if either value is missing. `PORT` defaults to `3000`.
+Set `LLM_API_KEY` and `LLM_MODEL` in `.env`. `PORT` defaults to `3000`.
 
-## Start the API
+## Start
 
 ```powershell
 npm start
@@ -39,8 +30,7 @@ Send JSON to `POST /chat`:
 
 ```json
 {
-  "provider": "openai",
-  "message": "Explain what an API is in simple terms."
+  "message": "What is machine learning?"
 }
 ```
 
@@ -48,9 +38,9 @@ Successful response:
 
 ```json
 {
-  "response": "An API is a way for software systems to communicate."
+  "response": "Machine learning is..."
 }
 ```
 
-Missing messages and unsupported providers receive `400 Bad Request`. LLM
-failures return a generic `500` response without exposing provider details.
+Missing or empty messages return a 400 response. LLM errors return a generic
+500 response without exposing internal or provider details.

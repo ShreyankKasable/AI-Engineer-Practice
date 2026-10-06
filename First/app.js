@@ -2,12 +2,11 @@ const express = require("express");
 require("dotenv").config();
 
 const errorHandler = require("./middlewares/error.middleware");
-const createChatRouter = require("./routes/chat.routes");
-
+const chatRouter = require("./routes/chat.routes");
 const app = express();
 
 app.use(express.json());
-app.use("/chat", createChatRouter());
+app.use("/chat", chatRouter);
 app.use(errorHandler);
 
 if (require.main === module) {

@@ -2,12 +2,8 @@ const express = require("express");
 
 const chatController = require("../controllers/chat.controller");
 
-function createChatRouter() {
-  const router = express.Router();
+const router = express.Router();
 
-  router.post("/", chatController);
+router.post("/", chatController);
 
-  return router;
-}
-
-module.exports = createChatRouter;
+module.exports = router;
