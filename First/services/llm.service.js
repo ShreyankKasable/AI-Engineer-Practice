@@ -27,12 +27,13 @@ function getClient() {
     return { client, model };
 }
 
-async function generateResponse(message) {
+async function generateResponse(message, history = []) {
     const { client, model } = getClient();
     const result = await client.chat.completions.create({
         model,
         messages: [
             { role: "system", content: SYSTEM_PROMPT },
+            ...history,
             { role: "user", content: message },
         ],
     });

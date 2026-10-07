@@ -3,13 +3,17 @@ function errorHandler(error, request, response, next) {
     return next(error);
   }
 
-  const invalidJson = error.type === "entity.parse.failed";
+  if (error.type === "entity.parse.failed") {
+    return response.status(400).json({ error: "Invalid JSON request body" });
+  }
 
-  return response.status(invalidJson ? 400 : 500).json({
-    error: invalidJson
-      ? "Invalid JSON request body"
-      : "Failed to generate response",
-  });
+  if (error.statusCode >= 400 && error.statusCode < 500) {
+    return response.status(error.statusCode).json({
+      error: error.statusCode === 404 ? "Conversation not found" : "Request failed",
+    });
+  }
+
+  return response.status(500).json({ error: "Failed to generate response" });
 }
 
 module.exports = errorHandler;

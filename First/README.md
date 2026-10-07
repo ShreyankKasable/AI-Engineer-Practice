@@ -1,10 +1,12 @@
 # Basic LLM Chat API
 
-A small Node.js and Express API that accepts a message, sends it to an LLM,
-and returns only the generated text.
+A small Node.js and Express API that accepts a message, loads conversation
+history from a local JSON file, sends the context to an LLM, and returns the
+generated text.
 
 ```text
-Client -> POST /chat -> Controller -> LlmService -> LLM API
+Client -> POST /chat -> Controller -> Conversation service -> JSON storage
+                                                     -> LlmService -> LLM API
 ```
 
 ## Setup
@@ -30,7 +32,7 @@ Send JSON to `POST /chat`:
 
 ```json
 {
-  "message": "What is machine learning?"
+  "message": "My name is Shreyank."
 }
 ```
 
@@ -38,9 +40,21 @@ Successful response:
 
 ```json
 {
-  "response": "Machine learning is..."
+  "conversationId": "generated-id",
+  "response": "Nice to meet you, Shreyank!"
 }
 ```
 
-Missing or empty messages return a 400 response. LLM errors return a generic
-500 response without exposing internal or provider details.
+Send the returned `conversationId` with the next message to continue that
+conversation:
+
+```json
+{
+  "conversationId": "generated-id",
+  "message": "What is my name?"
+}
+```
+
+Conversation messages are stored locally in `data/conversations.json`. Missing
+or empty messages return a 400 response, unknown conversation IDs return 404,
+and LLM errors return a generic 500 response.
