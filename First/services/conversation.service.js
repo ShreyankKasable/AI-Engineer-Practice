@@ -4,7 +4,6 @@ const conversationStorage = require("../storage/conversation.storage");
 const llmService = require("./llm.service");
 
 async function sendMessage(message, conversationId) {
-  
   const data = await conversationStorage.readConversations();
   const conversations = Object.assign(Object.create(null), data.conversations);
   const id = conversationId || randomUUID();
