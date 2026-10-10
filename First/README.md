@@ -24,7 +24,9 @@ Install Ollama, then download and start a local model:
 ollama run qwen2.5:3b
 ```
 
-Set `LLM_MODEL=qwen2.5:3b` in `.env`. The app connects to Ollama at
+Set `LLM_MODEL=qwen2.5:3b` and `LLM_HISTORY_LIMIT=6` in `.env`. The history
+limit controls how many of the most recent stored messages are sent to the LLM;
+all conversation messages remain saved in the JSON file. The app connects to Ollama at
 `http://localhost:11434/v1/` using its OpenAI-compatible API; no Hugging Face
 token or API key is needed. `PORT` defaults to `3000`.
 
