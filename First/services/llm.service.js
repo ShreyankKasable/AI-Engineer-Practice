@@ -10,18 +10,17 @@ const SYSTEM_PROMPT = [
 let client;
 
 function getClient() {
-    const apiKey = process.env.LLM_API_KEY;
     const model = process.env.LLM_MODEL;
 
-    if (!apiKey) {
-        throw new Error("LLM_API_KEY must be set in the environment.");
-    }
     if (!model) {
         throw new Error("LLM_MODEL must be set in the environment.");
     }
 
     if (!client) {
-        client = new OpenAI({ apiKey });
+        client = new OpenAI({
+            apiKey: "ollama",
+            baseURL: "http://localhost:11434/v1/",
+        });
     }
 
     return { client, model };

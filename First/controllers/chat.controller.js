@@ -8,10 +8,7 @@ async function chat(request, response) {
     }
 
     const conversationId = request.body?.conversationId;
-    if (
-        conversationId !== undefined &&
-        (typeof conversationId !== "string" || !conversationId.trim())
-    ) {
+    if ( conversationId !== undefined && (typeof conversationId !== "string" || !conversationId.trim())) {
         return response.status(400).json({ error: "A valid conversationId is required" });
     }
 

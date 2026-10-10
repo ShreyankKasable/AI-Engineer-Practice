@@ -18,7 +18,15 @@ npm install
 Copy-Item .env.example .env
 ```
 
-Set `LLM_API_KEY` and `LLM_MODEL` in `.env`. `PORT` defaults to `3000`.
+Install Ollama, then download and start a local model:
+
+```powershell
+ollama run qwen2.5:3b
+```
+
+Set `LLM_MODEL=qwen2.5:3b` in `.env`. The app connects to Ollama at
+`http://localhost:11434/v1/` using its OpenAI-compatible API; no Hugging Face
+token or API key is needed. `PORT` defaults to `3000`.
 
 ## Start
 
